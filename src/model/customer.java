@@ -22,6 +22,10 @@ public class customer {
     public String getcostumerName() { return costumerName; }
     public void setcostumerName(String costumerName) { this.costumerName = costumerName; }
 
+    // Alias en ingles para estandarizar nomenclatura.
+    public String getCustomerName() { return costumerName; }
+    public void setCustomerName(String customerName) { this.costumerName = customerName; }
+
     public String getDui() { return dui; }
     public void setDui(String dui) { this.dui = dui; }
 
