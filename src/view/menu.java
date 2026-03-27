@@ -1,21 +1,21 @@
 package view;
 
 import model.customer;
-import service.costumerService;
+import service.customerService;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class menu {
-    private final costumerService customerService;
+    private final customerService customerService;
     private final Scanner scanner;
 
     public menu() {
-        this.customerService = new costumerService();
+        this.customerService = new customerService();
         this.scanner = new Scanner(System.in);
     }
 
-    public menu(costumerService customerService, Scanner scanner) {
+    public menu(customerService customerService, Scanner scanner) {
         this.customerService = customerService;
         this.scanner = scanner;
     }
@@ -70,7 +70,7 @@ public class menu {
         String telefono = scanner.nextLine();
 
         try {
-            customer nuevo = customerService.crearCliente(nombre, dui, telefono);
+            customer nuevo = customerService.createCustomer(nombre, dui, telefono);
             System.out.println("Cliente registrado con exito. ID: " + nuevo.getId());
         } catch (IllegalArgumentException e) {
             System.out.println("Error al registrar cliente: " + e.getMessage());
@@ -79,7 +79,7 @@ public class menu {
 
     private void listarClientes() {
         System.out.println("\n--- Lista de Clientes ---");
-        List<customer> clientes = customerService.listarClientes();
+        List<customer> clientes = customerService.listCustomers();
 
         if (clientes.isEmpty()) {
             System.out.println("No hay clientes registrados.");
@@ -96,7 +96,7 @@ public class menu {
         System.out.print("ID del cliente: ");
         int id = leerEntero();
 
-        if (customerService.buscarCliente(id) == null) {
+        if (customerService.findCustomerById(id) == null) {
             System.out.println("No existe un cliente con ese ID.");
             return;
         }
@@ -109,7 +109,7 @@ public class menu {
         String telefono = scanner.nextLine();
 
         try {
-            boolean editado = customerService.editarCliente(id, nombre, dui, telefono);
+            boolean editado = customerService.updateCustomer(id, nombre, dui, telefono);
             if (editado) {
                 System.out.println("Cliente editado con exito.");
             } else {
@@ -125,7 +125,7 @@ public class menu {
         System.out.print("ID del cliente a eliminar: ");
         int id = leerEntero();
 
-        boolean eliminado = customerService.eliminarCliente(id);
+        boolean eliminado = customerService.deleteCustomer(id);
         if (eliminado) {
             System.out.println("Cliente eliminado con exito.");
         } else {
@@ -160,7 +160,7 @@ public class menu {
         System.out.print("Ingrese ID: ");
         int id = leerEntero();
 
-        customer cliente = customerService.buscarCliente(id);
+        customer cliente = customerService.findCustomerById(id);
         if (cliente == null) {
             System.out.println("Cliente no encontrado.");
             return;
@@ -171,7 +171,7 @@ public class menu {
     private void buscarPorNombre() {
         System.out.print("Ingrese nombre a buscar: ");
         String nombre = scanner.nextLine();
-        List<customer> resultados = customerService.buscarPorNombre(nombre);
+        List<customer> resultados = customerService.findCustomersByName(nombre);
 
         if (resultados.isEmpty()) {
             System.out.println("No se encontraron clientes.");
@@ -187,7 +187,7 @@ public class menu {
         System.out.print("Ingrese DUI (00000000-0): ");
         String dui = scanner.nextLine();
 
-        customer cliente = customerService.buscarPorDUI(dui);
+        customer cliente = customerService.findCustomerByDui(dui);
         if (cliente == null) {
             System.out.println("Cliente no encontrado.");
             return;

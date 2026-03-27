@@ -46,7 +46,7 @@ public class order {
     }
     // quitar detalle a al pedido
     public void removeDetail(int detailId) {
-        this.details.removeIf(d -> id == detailId);
+        this.details.removeIf(d -> d.getId() == detailId);
     }
 
 
