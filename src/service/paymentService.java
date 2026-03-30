@@ -60,9 +60,4 @@ public class paymentService {
         return new ArrayList<>(pagos);
     }
 
-    public List<payment> listarPagosPorFecha(String fecha) {
-        return pagos.stream()
-                .filter(pago -> pago.getFecha().startsWith(fecha))
-                .collect(Collectors.toList());
-    }
 }

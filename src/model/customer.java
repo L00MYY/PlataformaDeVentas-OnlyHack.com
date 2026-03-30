@@ -6,7 +6,6 @@ public class customer {
     private String dui; // Format: 00000000-0
     private String telefono;
 
-    public customer() {}
 
     public customer(int id, String nombre, String dui, String telefono) {
         this.id = id;
