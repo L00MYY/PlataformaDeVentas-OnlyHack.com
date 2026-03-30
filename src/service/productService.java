@@ -6,72 +6,101 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class productService {
-    private final List<product> products = new ArrayList<>();
-    private int nextId = 1;
+    private final List<product> productos = new ArrayList<>();
+    private int siguienteId = 1;
 
-    public product createProduct(String name, double price, int stock) {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre del producto no puede estar vacio.");
-        }
-        if (price < 0) {
-            throw new IllegalArgumentException("El precio no puede ser negativo.");
-        }
-        if (stock < 0) {
-            throw new IllegalArgumentException("El stock no puede ser negativo.");
-        }
+    public product crearProducto(String nombre, double precio, int stock) {
+        validarNombre(nombre);
+        validarPrecio(precio);
+        validarStock(stock);
 
-        product newProduct = new product(nextId++, name.trim(), price, stock);
-        products.add(newProduct);
-        return newProduct;
+        product nuevoProducto = new product(siguienteId++, nombre.trim(), precio, stock);
+        productos.add(nuevoProducto);
+        return nuevoProducto;
     }
 
-    public product getProductById(int id) {
-        for (product p : products) {
-            if (p.getIdProducto() == id) {
-                return p;
+    public product obtenerProducto(int id) {
+        for (product producto : productos) {
+            if (producto.getIdProducto() == id) {
+                return producto;
             }
         }
         return null;
     }
 
-    public List<product> listProducts() {
-        return new ArrayList<>(products);
+    public List<product> listarProductos() {
+        return new ArrayList<>(productos);
     }
 
-    public boolean hasStock(int productId, int quantity) {
-        if (quantity <= 0) {
-            return false;
+    public List<product> buscarPorNombre(String nombre) {
+        String nombreBuscado = nombre == null ? "" : nombre.trim().toLowerCase();
+        List<product> resultados = new ArrayList<>();
+
+        for (product producto : productos) {
+            if (producto.getNombreProducto().toLowerCase().contains(nombreBuscado)) {
+                resultados.add(producto);
+            }
         }
-        product p = getProductById(productId);
-        return p != null && p.getCantidadProducto() >= quantity;
+
+        return resultados;
     }
 
-    /**
-     * Descuenta stock si hay disponibilidad suficiente.
-     */
-    public boolean updateStock(int productId, int quantityToDiscount) {
-        product p = getProductById(productId);
-        if (p == null || quantityToDiscount <= 0) {
-            return false;
-        }
-        if (p.getCantidadProducto() < quantityToDiscount) {
+    public boolean editarProducto(int id, String nombre, double precio, int stock) {
+        product producto = obtenerProducto(id);
+        if (producto == null) {
             return false;
         }
 
-        p.setCantidadProducto(p.getCantidadProducto() - quantityToDiscount);
+        validarNombre(nombre);
+        validarPrecio(precio);
+        validarStock(stock);
+
+        producto.setNombreProducto(nombre.trim());
+        producto.setPrecio(precio);
+        producto.setCantidadProducto(stock);
         return true;
     }
 
-    // Metodos de compatibilidad con nombres previos
-    public boolean hayStock(int idProducto, int cantidad) {
-        return hasStock(idProducto, cantidad);
+    public boolean eliminarProducto(int id) {
+        return productos.removeIf(producto -> producto.getIdProducto() == id);
     }
 
-    public product obtenerProducto(int idProducto) {
-        return getProductById(idProducto);
+    public boolean hayStock(int idProducto, int cantidad) {
+        if (cantidad <= 0) {
+            return false;
+        }
+        product producto = obtenerProducto(idProducto);
+        return producto != null && producto.getCantidadProducto() >= cantidad;
     }
 
     public boolean actualizarStock(int idProducto, int cantidadDescontar) {
-        return updateStock(idProducto, cantidadDescontar);
+        product producto = obtenerProducto(idProducto);
+        if (producto == null || cantidadDescontar <= 0) {
+            return false;
+        }
+        if (producto.getCantidadProducto() < cantidadDescontar) {
+            return false;
+        }
+
+        producto.setCantidadProducto(producto.getCantidadProducto() - cantidadDescontar);
+        return true;
+    }
+
+    private void validarNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del producto no puede estar vacio.");
+        }
+    }
+
+    private void validarPrecio(double precio) {
+        if (precio < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
+    }
+
+    private void validarStock(int stock) {
+        if (stock < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo.");
+        }
     }
 }

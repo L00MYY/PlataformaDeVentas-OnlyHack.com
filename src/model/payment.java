@@ -1,36 +1,36 @@
 package model;
+
 import enums.PaymentMethods;
+
 public class payment {
     private int id;
-    private int orderId;
-    private double amount;
-    private PaymentMethods paymentMethod;
-    private String date; // Format: dd/MM/yyyy HH:mm
+    private int idPedido;
+    private double monto;
+    private PaymentMethods metodoPago;
+    private String fecha; // Format: dd/MM/yyyy HH:mm
 
     public payment() {}
 
-    public payment(int id, int orderId, double amount, PaymentMethods paymentMethod, String date) {
+    public payment(int id, int idPedido, double monto, PaymentMethods metodoPago, String fecha) {
         this.id = id;
-        this.orderId = orderId;
-        this.amount = amount;
-        this.paymentMethod = paymentMethod;
-        this.date = date;
+        this.idPedido = idPedido;
+        this.monto = monto;
+        this.metodoPago = metodoPago;
+        this.fecha = fecha;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getOrderId() { return orderId; }
-    public void setOrderId(int orderId) { this.orderId = orderId; }
+    public int getIdPedido() { return idPedido; }
+    public void setIdPedido(int idPedido) { this.idPedido = idPedido; }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public double getMonto() { return monto; }
+    public void setMonto(double monto) { this.monto = monto; }
 
-    public PaymentMethods getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(PaymentMethods paymentMethod) { this.paymentMethod = paymentMethod; }
+    public PaymentMethods getMetodoPago() { return metodoPago; }
+    public void setMetodoPago(PaymentMethods metodoPago) { this.metodoPago = metodoPago; }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
-
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
 }

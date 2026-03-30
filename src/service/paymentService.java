@@ -2,67 +2,67 @@ package service;
 
 import enums.PaymentMethods;
 import model.payment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class paymentService {
 
-    private List<payment> payments;
-    private orderService orderService;
-    private static int nextId = 1;
+    private List<payment> pagos;
+    private orderService servicioPedidos;
+    private static int siguienteId = 1;
 
-    public paymentService(orderService orderService) {
-        this.payments = new ArrayList<>();
-        this.orderService = orderService;
+    public paymentService(orderService servicioPedidos) {
+        this.pagos = new ArrayList<>();
+        this.servicioPedidos = servicioPedidos;
     }
 
-    public payment processPayment(int orderId, PaymentMethods method) {
-        if (!orderService.orderExists(orderId)) {
+    public payment procesarPago(int idPedido, PaymentMethods metodo) {
+        if (!servicioPedidos.existePedido(idPedido)) {
             return null;
         }
 
-        if (!orderService.canBePaid(orderId)) {
+        if (!servicioPedidos.puedeSerPagado(idPedido)) {
             return null;
         }
 
-        if (hasPaymentForOrder(orderId)) {
+        if (existePagoParaPedido(idPedido)) {
             return null;
         }
 
-        double total = orderService.calculateOrderTotal(orderId);
+        double total = servicioPedidos.calcularTotal(idPedido);
 
-        payment payment = new payment();
-        payment.setId(nextId++);
-        payment.setOrderId(orderId);
-        payment.setAmount(total);
-        payment.setPaymentMethod(method);
-        payment.setDate(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        payment pago = new payment();
+        pago.setId(siguienteId++);
+        pago.setIdPedido(idPedido);
+        pago.setMonto(total);
+        pago.setMetodoPago(metodo);
+        pago.setFecha(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
 
-        payments.add(payment);
+        pagos.add(pago);
+        servicioPedidos.finalizarPedido(idPedido);
 
-        orderService.finalizeOrder(orderId);
-
-        return payment;
+        return pago;
     }
 
-    private boolean hasPaymentForOrder(int orderId) {
-        return payments.stream().anyMatch(p -> p.getOrderId() == orderId);
+    private boolean existePagoParaPedido(int idPedido) {
+        return pagos.stream().anyMatch(pago -> pago.getIdPedido() == idPedido);
     }
 
-    public List<payment> findPaymentsByOrder(int orderId) {
-        return payments.stream()
-                .filter(p -> p.getOrderId() == orderId)
+    public List<payment> buscarPagosPorPedido(int idPedido) {
+        return pagos.stream()
+                .filter(pago -> pago.getIdPedido() == idPedido)
                 .collect(Collectors.toList());
     }
 
-    public List<payment> listAllPayments() {
-        return new ArrayList<>(payments);
+    public List<payment> listarPagos() {
+        return new ArrayList<>(pagos);
     }
 
-    public List<payment> listPaymentsByDate(String date) {
-        return payments.stream()
-                .filter(p -> p.getDate().startsWith(date))
+    public List<payment> listarPagosPorFecha(String fecha) {
+        return pagos.stream()
+                .filter(pago -> pago.getFecha().startsWith(fecha))
                 .collect(Collectors.toList());
     }
 }

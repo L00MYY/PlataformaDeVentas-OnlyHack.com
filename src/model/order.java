@@ -1,53 +1,49 @@
 package model;
+
 import enums.OrderStatus;
-import model.orderDetail;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class order {
     private int id;
-    private int customerId;
-    private String date; // Format: dd/MM/yyyy HH:mm
-    private OrderStatus status;
-    private List<orderDetail> details; // Esta lista guarda los productos agregaedos de un pedido especifico
-    //Listado de pedidos
+    private int idCliente;
+    private String fecha; // Format: dd/MM/yyyy HH:mm
+    private OrderStatus estado;
+    private List<orderDetail> detalles;
+
     public order() {
-        this.details = new ArrayList<>();
+        this.detalles = new ArrayList<>();
     }
 
-    public order(int id, int customerId, String date, OrderStatus status) {
+    public order(int id, int idCliente, String fecha, OrderStatus estado) {
         this.id = id;
-        this.customerId = customerId;
-        this.date = date;
-        this.status = status;
-        this.details = new ArrayList<>();
+        this.idCliente = idCliente;
+        this.fecha = fecha;
+        this.estado = estado;
+        this.detalles = new ArrayList<>();
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    public int getIdCliente() { return idCliente; }
+    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
 
-    public OrderStatus getStatus() { return status; }
-    public void setStatus(OrderStatus status) { this.status = status; }
+    public OrderStatus getEstado() { return estado; }
+    public void setEstado(OrderStatus estado) { this.estado = estado; }
 
-    public List<orderDetail> getDetails() { return details; }
+    public List<orderDetail> getDetalles() { return detalles; }
+    public void setDetalles(List<orderDetail> detalles) { this.detalles = detalles; }
 
-    public void setDetails(List<orderDetail> details) { this.details = details; }
-
-    // agregar detalle a al pedido
-    public void addDetail(orderDetail detail) {
-        this.details.add(detail);
-    }
-    // quitar detalle a al pedido
-    public void removeDetail(int detailId) {
-        this.details.removeIf(d -> d.getId() == detailId);
+    public void agregarDetalle(orderDetail detalle) {
+        this.detalles.add(detalle);
     }
 
-
+    public void quitarDetalle(int idDetalle) {
+        this.detalles.removeIf(detalle -> detalle.getId() == idDetalle);
+    }
 }

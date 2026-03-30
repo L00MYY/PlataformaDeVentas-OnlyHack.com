@@ -2,40 +2,37 @@ package model;
 
 public class orderDetail {
     private int id;
-    private int orderId;
-    private int productId;
-    private int quantity;
-    private double unitPrice; //precio unitario al mometo de añadirse al detalle de la orden
+    private int idPedido;
+    private int idProducto;
+    private int cantidad;
+    private double precioUnitario;
 
     public orderDetail() {}
 
-    public orderDetail(int id, int orderId, int productId, int quantity, double unitPrice) {
+    public orderDetail(int id, int idPedido, int idProducto, int cantidad, double precioUnitario) {
         this.id = id;
-        this.orderId = orderId;
-        this.productId = productId;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
+        this.idPedido = idPedido;
+        this.idProducto = idProducto;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
     }
 
-    // Getters and Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getOrderId() { return orderId; }
-    public void setOrderId(int orderId) { this.orderId = orderId; }
+    public int getIdPedido() { return idPedido; }
+    public void setIdPedido(int idPedido) { this.idPedido = idPedido; }
 
-    public int getProductId() { return productId; }
-    public void setProductId(int productId) { this.productId = productId; }
+    public int getIdProducto() { return idProducto; }
+    public void setIdProducto(int idProducto) { this.idProducto = idProducto; }
 
-    public int getQuantity() { return quantity; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 
-    public double getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+    public double getPrecioUnitario() { return precioUnitario; }
+    public void setPrecioUnitario(double precioUnitario) { this.precioUnitario = precioUnitario; }
 
-    //metodo para calcular el subtotal
-    public double calculateSubtotal() {
-        return quantity * unitPrice;
+    public double calcularSubtotal() {
+        return cantidad * precioUnitario;
     }
-
 }

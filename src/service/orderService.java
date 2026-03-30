@@ -9,179 +9,118 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class orderService {
-    private final List<order> orders = new ArrayList<>();
-    private int nextOrderId = 1;
-    private int nextDetailId = 1;
+    private final List<order> pedidos = new ArrayList<>();
+    private int siguienteIdPedido = 1;
+    private int siguienteIdDetalle = 1;
 
-    private final customerService customerService;
-    private final productService productService;
+    private final customerService servicioClientes;
+    private final productService servicioProductos;
 
-    public orderService(customerService customerService, productService productService) {
-        this.customerService = customerService;
-        this.productService = productService;
+    public orderService(customerService servicioClientes, productService servicioProductos) {
+        this.servicioClientes = servicioClientes;
+        this.servicioProductos = servicioProductos;
     }
 
-    /**
-     * Crea un pedido solo si el cliente existe.
-     */
-    public order createOrder(int customerId) {
-        if (!customerService.customerExists(customerId)) {
+    public order crearPedido(int idCliente) {
+        if (!servicioClientes.existeCliente(idCliente)) {
             return null;
         }
 
-        order newOrder = new order();
-        newOrder.setId(nextOrderId++);
-        newOrder.setCustomerId(customerId);
-        newOrder.setStatus(OrderStatus.PENDIENTE);
-        orders.add(newOrder);
-        return newOrder;
+        order nuevoPedido = new order();
+        nuevoPedido.setId(siguienteIdPedido++);
+        nuevoPedido.setIdCliente(idCliente);
+        nuevoPedido.setEstado(OrderStatus.PENDIENTE);
+        pedidos.add(nuevoPedido);
+        return nuevoPedido;
     }
 
-    /**
-     * Agrega un producto a un pedido pendiente.
-     */
-    public boolean addProductToOrder(int orderId, int productId, int quantity) {
-        order currentOrder = findOrderById(orderId);
-        if (currentOrder == null || currentOrder.getStatus() != OrderStatus.PENDIENTE) {
+    public boolean agregarProducto(int idPedido, int idProducto, int cantidad) {
+        order pedidoActual = buscarPedido(idPedido);
+        if (pedidoActual == null || pedidoActual.getEstado() != OrderStatus.PENDIENTE) {
             return false;
         }
-        if (!productService.hasStock(productId, quantity)) {
+        if (!servicioProductos.hayStock(idProducto, cantidad)) {
             return false;
         }
 
-        product currentProduct = productService.getProductById(productId);
-        if (currentProduct == null) {
+        product productoActual = servicioProductos.obtenerProducto(idProducto);
+        if (productoActual == null) {
             return false;
         }
 
-        orderDetail detail = new orderDetail();
-        detail.setId(nextDetailId++);
-        detail.setOrderId(orderId);
-        detail.setProductId(productId);
-        detail.setQuantity(quantity);
-        detail.setUnitPrice(currentProduct.getPrecio());
+        orderDetail detalle = new orderDetail();
+        detalle.setId(siguienteIdDetalle++);
+        detalle.setIdPedido(idPedido);
+        detalle.setIdProducto(idProducto);
+        detalle.setCantidad(cantidad);
+        detalle.setPrecioUnitario(productoActual.getPrecio());
 
-        currentOrder.getDetails().add(detail);
+        pedidoActual.getDetalles().add(detalle);
         return true;
     }
 
-    /**
-     * Quita un detalle del pedido.
-     */
-    public boolean removeProductFromOrder(int orderId, int detailId) {
-        order currentOrder = findOrderById(orderId);
-        if (currentOrder == null || currentOrder.getStatus() != OrderStatus.PENDIENTE) {
-            return false;
-        }
-        return currentOrder.getDetails().removeIf(d -> d.getId() == detailId);
-    }
-
-    public double calculateSubtotal(int orderId) {
-        order currentOrder = findOrderById(orderId);
-        if (currentOrder == null) {
+    public double calcularSubtotal(int idPedido) {
+        order pedidoActual = buscarPedido(idPedido);
+        if (pedidoActual == null) {
             return 0;
         }
 
         double subtotal = 0;
-        for (orderDetail detail : currentOrder.getDetails()) {
-            subtotal += detail.getQuantity() * detail.getUnitPrice();
+        for (orderDetail detalle : pedidoActual.getDetalles()) {
+            subtotal += detalle.getCantidad() * detalle.getPrecioUnitario();
         }
         return subtotal;
     }
 
-    public double calculateTaxes(int orderId) {
-        return calculateSubtotal(orderId) * 0.13;
+    public double calcularImpuestos(int idPedido) {
+        return calcularSubtotal(idPedido) * 0.13;
     }
 
-    public double calculateOrderTotal(int orderId) {
-        return calculateSubtotal(orderId) + calculateTaxes(orderId);
+    public double calcularTotal(int idPedido) {
+        return calcularSubtotal(idPedido) + calcularImpuestos(idPedido);
     }
 
-    /**
-     * Finaliza pedido y descuenta stock.
-     */
-    public boolean finalizeOrder(int orderId) {
-        order currentOrder = findOrderById(orderId);
-        if (currentOrder == null || currentOrder.getDetails().isEmpty()) {
+    public boolean finalizarPedido(int idPedido) {
+        order pedidoActual = buscarPedido(idPedido);
+        if (pedidoActual == null || pedidoActual.getDetalles().isEmpty()) {
             return false;
         }
 
-        for (orderDetail detail : currentOrder.getDetails()) {
-            productService.updateStock(detail.getProductId(), detail.getQuantity());
+        for (orderDetail detalle : pedidoActual.getDetalles()) {
+            servicioProductos.actualizarStock(detalle.getIdProducto(), detalle.getCantidad());
         }
 
-        currentOrder.setStatus(OrderStatus.PAGADO);
+        pedidoActual.setEstado(OrderStatus.PAGADO);
         return true;
     }
 
-    public order findOrderById(int orderId) {
-        for (order currentOrder : orders) {
-            if (currentOrder.getId() == orderId) {
-                return currentOrder;
+    public order buscarPedido(int idPedido) {
+        for (order pedidoActual : pedidos) {
+            if (pedidoActual.getId() == idPedido) {
+                return pedidoActual;
             }
         }
         return null;
     }
 
-    public List<order> listOrdersByCustomer(int customerId) {
-        List<order> result = new ArrayList<>();
-        for (order currentOrder : orders) {
-            if (currentOrder.getCustomerId() == customerId) {
-                result.add(currentOrder);
+    public List<order> listarPedidosPorCliente(int idCliente) {
+        List<order> resultado = new ArrayList<>();
+        for (order pedidoActual : pedidos) {
+            if (pedidoActual.getIdCliente() == idCliente) {
+                resultado.add(pedidoActual);
             }
         }
-        return result;
-    }
-
-    public boolean canBePaid(int orderId) {
-        order currentOrder = findOrderById(orderId);
-        return currentOrder != null
-                && !currentOrder.getDetails().isEmpty()
-                && currentOrder.getStatus() == OrderStatus.PENDIENTE;
-    }
-
-    public boolean orderExists(int orderId) {
-        return findOrderById(orderId) != null;
-    }
-
-    // Metodos de compatibilidad con nombres previos
-    public order crearPedido(int idCliente) {
-        return createOrder(idCliente);
-    }
-
-    public boolean agregarProducto(int idPedido, int idProducto, int cantidad) {
-        return addProductToOrder(idPedido, idProducto, cantidad);
-    }
-
-    public boolean quitarProducto(int idPedido, int idDetalle) {
-        return removeProductFromOrder(idPedido, idDetalle);
-    }
-
-    public double calcularSubtotal(int idPedido) {
-        return calculateSubtotal(idPedido);
-    }
-
-    public double calcularImpuestos(int idPedido) {
-        return calculateTaxes(idPedido);
-    }
-
-    public double calcularTotal(int idPedido) {
-        return calculateOrderTotal(idPedido);
-    }
-
-    public boolean finalizarPedido(int idPedido) {
-        return finalizeOrder(idPedido);
-    }
-
-    public order buscarPedido(int idPedido) {
-        return findOrderById(idPedido);
-    }
-
-    public List<order> listarPedidosPorCliente(int idCliente) {
-        return listOrdersByCustomer(idCliente);
+        return resultado;
     }
 
     public boolean puedeSerPagado(int idPedido) {
-        return canBePaid(idPedido);
+        order pedidoActual = buscarPedido(idPedido);
+        return pedidoActual != null
+                && !pedidoActual.getDetalles().isEmpty()
+                && pedidoActual.getEstado() == OrderStatus.PENDIENTE;
+    }
+
+    public boolean existePedido(int idPedido) {
+        return buscarPedido(idPedido) != null;
     }
 }
