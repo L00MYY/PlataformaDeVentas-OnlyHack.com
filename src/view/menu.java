@@ -50,15 +50,12 @@ public class menu {
                     menuPagos();
                     break;
                 case 5:
-                    menuReportes();
-                    break;
-                case 6:
                     System.out.println("Hasta luego.");
                     break;
                 default:
                     System.out.println("Opcion invalida.");
             }
-        } while (opcion != 6);
+        } while (opcion != 5);
     }
 
     private void mostrarMenuPrincipal() {
@@ -67,7 +64,7 @@ public class menu {
         System.out.println("2. Gestion de clientes");
         System.out.println("3. Gestion de pedidos");
         System.out.println("4. Gestion de pagos");
-        System.out.println("6. Salir");
+        System.out.println("5. Salir");
     }
 // AQUI INICIA MENU PRODUCTOS
     private void menuProductos() {
@@ -187,7 +184,7 @@ public class menu {
             System.out.println(producto);
         }
     }
-
+// MENU CLIENTES
     private void menuClientes() {
         int opcion;
 
@@ -469,7 +466,7 @@ public class menu {
         System.out.println("Impuestos: $" + servicioPedidos.calcularImpuestos(idPedido));
         System.out.println("Total: $" + servicioPedidos.calcularTotal(idPedido));
     }
-
+// MENU PAGAS
     private void menuPagos() {
         int opcion;
 
@@ -587,70 +584,6 @@ public class menu {
         );
     }
 
-    private void menuReportes() {
-        int opcion;
-
-        do {
-            System.out.println("\n--- REPORTES ---");
-            System.out.println("1. Pedidos por cliente");
-            System.out.println("2. Pagos por fecha");
-            System.out.println("3. Volver");
-
-            opcion = leerEntero("Seleccione una opcion: ");
-
-            switch (opcion) {
-                case 1:
-                    reportePedidosPorCliente();
-                    break;
-                case 2:
-                    reportePagosPorFecha();
-                    break;
-                case 3:
-                    break;
-                default:
-                    System.out.println("Opcion invalida.");
-            }
-        } while (opcion != 3);
-    }
-
-    private void reportePedidosPorCliente() {
-        System.out.println("\n--- PEDIDOS POR CLIENTE ---");
-        int idCliente = leerEntero("ID del cliente: ");
-        List<order> pedidos = servicioPedidos.listarPedidosPorCliente(idCliente);
-
-        if (pedidos.isEmpty()) {
-            System.out.println("No hay pedidos para ese cliente.");
-            return;
-        }
-
-        for (order pedido : pedidos) {
-            System.out.println(
-                    "Pedido #" + pedido.getId()
-                            + " | Estado: " + pedido.getEstado()
-                            + " | Productos: " + pedido.getDetalles().size()
-                            + " | Total: $" + servicioPedidos.calcularTotal(pedido.getId())
-            );
-        }
-    }
-
-    private void reportePagosPorFecha() {
-        System.out.println("\n--- PAGOS POR FECHA ---");
-        String fecha = leerTexto("Fecha a buscar (dd/MM/yyyy): ");
-        List<payment> pagos = servicioPagos.listarPagosPorFecha(fecha);
-
-        if (pagos.isEmpty()) {
-            System.out.println("No hay pagos registrados en esa fecha.");
-            return;
-        }
-
-        double total = 0;
-        for (payment pago : pagos) {
-            imprimirPago(pago);
-            total += pago.getMonto();
-        }
-
-        System.out.println("Total cobrado en la fecha: $" + total);
-    }
 
     private String leerTexto(String mensaje) {
         System.out.print(mensaje);
