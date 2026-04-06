@@ -66,6 +66,9 @@ public class menu {
         System.out.println("4. Gestion de pagos");
         System.out.println("5. Salir");
     }
+
+
+
 // AQUI INICIA MENU PRODUCTOS
     private void menuProductos() {
         int opcion;
@@ -184,6 +187,8 @@ public class menu {
             System.out.println(producto);
         }
     }
+
+
 // MENU CLIENTES
     private void menuClientes() {
         int opcion;
@@ -349,6 +354,8 @@ public class menu {
         System.out.println(cliente);
     }
 
+
+
 // AQUI INICIA MENU PEDIDOS
     private void menuPedidos() {
         int opcion;
@@ -457,6 +464,9 @@ public class menu {
         System.out.println("Impuestos: $" + servicioPedidos.calcularImpuestos(idPedido));
         System.out.println("Total: $" + servicioPedidos.calcularTotal(idPedido));
     }
+
+
+
 // MENU PAGOS
     private void menuPagos() {
         int opcion;
