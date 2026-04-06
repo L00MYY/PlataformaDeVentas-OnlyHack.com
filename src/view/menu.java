@@ -429,32 +429,23 @@ public class menu {
             return;
         }
 
-        System.out.println("Pedido #" + pedido.getId());
-        System.out.println("Cliente: " + pedido.getIdCliente());
-        System.out.println("Estado: " + pedido.getEstado());
-
         if (pedido.getDetalles().isEmpty()) {
             System.out.println("El pedido no tiene productos.");
             return;
         }
 
         System.out.println("\nDetalles:");
+        //FOR EACH
         for (orderDetail detalle : pedido.getDetalles()) {
             product producto = servicioProductos.obtenerProducto(detalle.getIdProducto());
             String nombreProducto = producto != null ? producto.getNombreProducto() : "Producto eliminado";
 
-            System.out.println(
-                    "Detalle #" + detalle.getId()
-                            + " | Producto: " + nombreProducto
-                            + " | Cantidad: " + detalle.getCantidad()
-                            + " | Precio unitario: $" + detalle.getPrecioUnitario()
-                            + " | Subtotal: $" + detalle.calcularSubtotal()
-            );
+            System.out.println("Producto: " + nombreProducto);
         }
     }
 
     private void calcularTotalPedido() {
-        System.out.println("\n--- CALCULAR TOTAL ---");
+        System.out.println("\n CALCULAR TOTAL");
         int idPedido = leerEntero("ID del pedido: ");
 
         if (!servicioPedidos.existePedido(idPedido)) {
@@ -466,7 +457,7 @@ public class menu {
         System.out.println("Impuestos: $" + servicioPedidos.calcularImpuestos(idPedido));
         System.out.println("Total: $" + servicioPedidos.calcularTotal(idPedido));
     }
-// MENU PAGAS
+// MENU PAGOS
     private void menuPagos() {
         int opcion;
 
@@ -538,9 +529,9 @@ public class menu {
             case 1:
                 return PaymentMethods.EFECTIVO;
             case 2:
-                return PaymentMethods.TARGETA_CREDITO;
+                return PaymentMethods.TARJETA_CREDITO;
             case 3:
-                return PaymentMethods.TARGETA_DEBITO;
+                return PaymentMethods.TARJETA_DEBITO;
             default:
                 return null;
         }
@@ -582,6 +573,11 @@ public class menu {
                         + " | Metodo: " + pago.getMetodoPago()
                         + " | Fecha: " + pago.getFecha()
         );
+    }
+
+    private void imprimirResumenPedido(order entidadPedido) {
+        //Aqui ejecutamos el override de order que resume/muestra los pedidos
+        System.out.println(entidadPedido.resumen());
     }
 
 

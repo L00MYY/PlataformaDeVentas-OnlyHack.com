@@ -12,6 +12,9 @@ public class order {
     private OrderStatus estado;
     private List<orderDetail> detalles;
 
+
+    // Sobrecarga de constructores
+    // Constructor que inicializa la lista de detalles de la orden para que List<orderDetail> detalles no quede NULL
     public order() {
         this.detalles = new ArrayList<>();
     }
@@ -45,5 +48,9 @@ public class order {
 
     public void quitarDetalle(int idDetalle) {
         this.detalles.removeIf(detalle -> detalle.getId() == idDetalle);
+    }
+
+    public String resumen() {
+        return "Pedido #" + id + " | Cliente: " + idCliente + " | Estado: " + estado;
     }
 }

@@ -7,8 +7,11 @@ public class orderDetail {
     private int cantidad;
     private double precioUnitario;
 
-    public orderDetail() {}
+    // Sobrecarga de constructores
 
+    // Creams uno vacio
+    public orderDetail() {}
+    //Cuando ya tenemos todos los parametros, cuando ya lo tenemos completo se usa este
     public orderDetail(int id, int idPedido, int idProducto, int cantidad, double precioUnitario) {
         this.id = id;
         this.idPedido = idPedido;
@@ -31,8 +34,4 @@ public class orderDetail {
 
     public double getPrecioUnitario() { return precioUnitario; }
     public void setPrecioUnitario(double precioUnitario) { this.precioUnitario = precioUnitario; }
-
-    public double calcularSubtotal() {
-        return cantidad * precioUnitario;
-    }
 }
